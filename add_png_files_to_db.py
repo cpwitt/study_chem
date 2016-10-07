@@ -29,8 +29,8 @@ from mongothon import Schema, create_model
 from pymongo import MongoClient
 
 connection = MongoClient('localhost', 27017)
-db = connection.test
-compounds = db['compounds']
+db = connection.test # use the test db
+compounds = db['compounds'] # name the collection in the test db
 
 compound_schema = Schema({
     "name": {"type": basestring, "required": True},
@@ -43,8 +43,14 @@ compound_schema = Schema({
 Compound = create_model( compound_schema, compounds )
 
 for new_compound in encoded_images_dict.keys():
-    compound = Compound({
-        "name": new_compound,
-        "formula_img": encoded_images_dict[new_compound]
-        })
-    compound.save()
+    # check to see if the named compound is already present
+    compound_search = Compound.find_one({'name': new_compound})
+    if compound_search:
+        print new_compound + " already exists in db"
+        pass
+    else:
+        compound = Compound({
+            "name": new_compound,
+            "formula_img": encoded_images_dict[new_compound]
+            })
+        compound.save()
