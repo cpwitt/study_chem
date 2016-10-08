@@ -11,7 +11,7 @@ MongoClient.connect(url, function(err, db) {
   console.log("Connected correctly to server");
 
   findDocuments(db, function(docs){
-    console.log('inside callback');
+    console.log('All images saved!');
     db.close();
   });
 });
