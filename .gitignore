@@ -6,3 +6,5 @@
 *.fls
 *.tex
 *.aux
+
+node_modules
