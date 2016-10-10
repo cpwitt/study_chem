@@ -5,7 +5,7 @@ var fs = require('fs');
 app.use(express.static(__dirname + '/new_img_folder'));
 
 app.get('/', function (req, res) {
-  res.render('index');
+  res.send('hello world');
 });
 
 var getRandomIntInclusive = function(min, max) {
@@ -28,17 +28,17 @@ app.get('/compound', function(req, res) {
       fs.readdir(path, function(err, items) {
           // pick a random int between 0 and items.length
           var fileName = getRandomIntInclusive(0,items.length);
-          console.log(items[fileName]);
+          
+          // TODO: check that this is a png file before sending
 
           res.sendFile(items[fileName], options, function (err) {
-                  if (err) {
+                if (err) {
                     console.log(err);
                     res.status(err.status).end();
-                  }
-                  else {
+                } else {
                     console.log('Sent:', items[fileName]);
-                  }
-                });
+                }
+          });
       });
 });
 
