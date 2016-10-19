@@ -64,8 +64,9 @@ app.get('/compound_db', function(req, res) {
             var imageBuffer = new Buffer(docs[fileName].formula_img, 'base64');
 
             // send the png image back to the client
-            res.set('Content-Type', 'image/png');
-            res.send( imageBuffer );
+            // res.set('Content-Type', 'image/png');
+            // res.send( imageBuffer );
+            res.json({name: docs[fileName].name , img: imageBuffer});
 
             db.close();
         }); 
