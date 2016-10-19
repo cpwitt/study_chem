@@ -2,6 +2,9 @@ var express = require('express');
 var app = express();
 var fs = require('fs');
 
+var MongoClient = require('mongodb').MongoClient
+  , assert = require('assert');
+
 app.use(express.static(__dirname + '/new_img_folder'));
 
 app.get('/', function (req, res) {
@@ -41,6 +44,33 @@ app.get('/compound', function(req, res) {
           });
       });
 });
+
+app.get('/compound_db', function(req, res) {
+    // get a random compound from the db
+    // Connection URL
+    var url = 'mongodb://localhost:27017/test';
+    // Use connect method to connect to the Server
+    MongoClient.connect(url, function(err, db) {
+        assert.equal(null, err);
+        console.log("Connected correctly to server");
+
+        var collection = db.collection('compounds');
+      
+        collection.find({}).toArray(function(err, docs) {
+            if (err) throw err;
+            // select a random item from the list
+            var fileName = getRandomIntInclusive(0,docs.length);
+            console.log(`random choice: ${fileName}`);
+            var imageBuffer = new Buffer(docs[fileName].formula_img, 'base64');
+
+            // send the png image back to the client
+            res.set('Content-Type', 'image/png');
+            res.send( imageBuffer );
+
+            db.close();
+        }); 
+    });
+})
 
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!');
